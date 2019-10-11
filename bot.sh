@@ -30,10 +30,10 @@ btn_infrastructure='
 
 btn_target='["People 👨‍💻","Infrastructure 🖥"]'
 
-btn_cleam='
-["Cleam Target - People"],
-["Cleam Target - Infrastructure"],
-["Cleam All","Cleam Args"]
+btn_Clean='
+["Clean Target - People"],
+["Clean Target - Infrastructure"],
+["Clean All","Clean Args"]
 '
 
 keyboard="$(ShellBot.ReplyKeyboardMarkup --button 'btn_all' --one_time_keyboard true)"
@@ -162,7 +162,11 @@ do
 		;;
 
 		"/shodan "*)
-		shodan init $shodan_key
+		message_text=$(echo "$message_text" | awk '{print $2}') 
+		if [ ! -f target_dir=/tmp/${message_from_id[$id]}/shodan.init ] ; then
+			shodan init $shodan_key
+			> /tmp/${message_from_id[$id]}/shodan.init
+		fi 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Shodan* \\n Target = *$message_text* Wait =)"   
@@ -175,7 +179,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Starting *TOR*" 
-		service tor start && sleep 15 
+		service tor start && sleep 10 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Karma* \\nTarget = *$target_p* Wait =)"   
@@ -187,14 +191,19 @@ do
 		;;
 
 		"/karma "*)
+		message_text=$(echo "$message_text" | awk '{print $2}') 
+		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
+					--parse_mode markdown			\
+					--text "Starting *TOR*" 
+		service tor start && sleep 10 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Karma* \\n Target = *$message_text* Wait =)" 
-		service tor start
-		karma_result=$(karma target $message_text)
-		service tor stop
+		karma target $message_text > /tmp/karma.log
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-					--text "$karma_result"  
+					--text "\`\`\`$(cat /tmp/karma.log) \\n \`\`\`" \
+                                        --parse_mode markdown
+		pkill tor && service tor stop
 		;;
 
 		'/sherlok')
@@ -209,12 +218,14 @@ do
 		;;
 
 		"/sherlok "*)
+		message_text=$(echo "$message_text" | awk '{print $2}') 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Sherlok* \\n Target = *$message_text* Wait =)"   
-		sherlock_result=$(sherlock $message_text)
-		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-					--text "$sherlock_result"  
+		sherlock $message_text | grep + > /tmp/sheklok.log
+		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 			\
+					--text "\`\`\`$(cat /tmp/sheklok.log) \`\`\`" 		\
+                                        --parse_mode markdown
 		;;
 
 		'/pwnedornot')
@@ -264,10 +275,10 @@ do
 		msgs+="/btninfra - Keyboard to infra\n"
 		msgs+="/btnpeople - Keyboard to people\n"
 		msgs+="/btnall - Keyboard all\n"
-		msga="Set your args 4 commands \n"
+		msga="Set your args for commands (beta)\n"
 		msga+="/advanced (beta)\n"
-		msgc="Cleam confis \n"
-		msgc+="/cleam"
+		msgc="Clean confis \n"
+		msgc+="/Clean"
 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgp)"		\
@@ -378,30 +389,30 @@ do
 		unset btn_target 
 		;;
 
-		'/cleam')
+		'/Clean')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 				     	--text "What do you want to clean ?"		\
-					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_cleam')" 
+					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_Clean')" 
 		;;
 
-		'Cleam Target - People')
+		'Clean Target - People')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Target People cleam"		\
+				     	--text "Target People Clean"		\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $target_dir_p
 
 		;;
 
-		'Cleam Target - Infrastructure')
+		'Clean Target - Infrastructure')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Target Infrastructure cleam"		\
+				     	--text "Target Infrastructure Clean"		\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $target_dir
 		;;
 
-		'Cleam All')
+		'Clean All')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 				     	--text "All clear"			\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
@@ -411,9 +422,9 @@ do
 		> $arg_nmap_dir
 		;;
 
-		'Cleam Args')
+		'Clean Args')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Args cleam"			\
+				     	--text "Args Clean"			\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $arg_nmap_dir		
