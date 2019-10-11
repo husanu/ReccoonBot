@@ -238,6 +238,7 @@ do
 		;;
 
 		"/pwnedornot "*)	
+		message_text=$(echo "$message_text" | awk '{print $2}') 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Pwnedornot* \\n Target = *$message_text* Wait =)"   
