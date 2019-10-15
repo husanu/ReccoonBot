@@ -5,7 +5,7 @@
 
 # Usage:
 
-In reccoon is possible run in two ways:
+In reccoon bot is possible run in two ways:
 > Locally:
 
 To run locally you must set the variable token
