@@ -6,7 +6,8 @@
 # Usage:
 
 In reccoon is possible run in two ways:
-> Locally :
+> Locally:
+
 To run locally you must set the variable token
 ```
 token="KEY"
