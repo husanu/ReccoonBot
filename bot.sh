@@ -14,18 +14,21 @@ ShellBot.username
 unset btn_all 
 
 btn_all='
-["/set-targert","/nmap","/inurl"],
-["/theharvester","/shodan","/whois"],
-["/karma","/sherlok","/pwnedornot"],
-["/dorks","/admin","/commands","/showinfra","/showpeople"]
+["/settargert","/setinfra","/setpeople"],
+["/namp","/shodan","/whois"],
+["/karma","/sherlok","/theharvester"],
+["/advanced","/admin","/commands","/showinfra","/showpeople"]
 '
 
 btn_people='
-["/karma","/sherlok","/pwnedornot"]
+["/karma","/sherlok","/theharvester"]
 '
 btn_infrastructure='
-["/nmap","/inurl","/theharvester"],
+["/nmap","/inurl"],
 ["/shodan","/whois"] 
+'
+btn_agv='
+["ARGS NMAP"] 
 '
 
 btn_target='["People 👨‍💻","Infrastructure 🖥"]'
@@ -39,6 +42,7 @@ btn_Clean='
 keyboard="$(ShellBot.ReplyKeyboardMarkup --button 'btn_all' --one_time_keyboard true)"
 keyboard_infrastructure="$(ShellBot.ReplyKeyboardMarkup --button 'btn_infrastructure' --one_time_keyboard true)"
 keyboard_people="$(ShellBot.ReplyKeyboardMarkup --button 'btn_people' --one_time_keyboard true)"
+keyboard_agv="$(ShellBot.ReplyKeyboardMarkup --button 'btn_agv' --one_time_keyboard true)"
 
 while :
 do
@@ -282,13 +286,13 @@ do
 		msgc+="/Clean"
 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
-					--text "$(echo -e $msgp)"		\
+					--text "$(echo -e $msgt)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgi)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
-					--text "$(echo -e $msgt)"		\
+					--text "$(echo -e $msgp)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgs)"		\
@@ -336,7 +340,13 @@ do
 		;;
 		'/advanced')
 		ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
-					--text "For what command  ?" 		\
+					--text "For what command ?" 		\
+					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_agv')"
+		;;
+		
+		'ARGS NMAP')
+		ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
+					--text "For what ARGS to NMAP ?" 	\
 					--reply_markup "$(ShellBot.ForceReply)"
 		;;
 
@@ -457,10 +467,13 @@ do
 			;;
 		esac
 		case ${message_reply_to_message_text[$id]} in
-			*"NMAP"*)
+			*"ARGS"*)
 			echo $message_text > $arg_nmap_dir
 			ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
-						--text "seus args são $message_text" 	\
+						--text "Your Args $message_text" 	\
+						--reply_markup "$keyboard_infrastructure"  \
+						--parse_mode markdown
+						
 			;;
 
 			*"target"*)
