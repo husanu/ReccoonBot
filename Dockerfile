@@ -13,7 +13,8 @@ RUN apt update && \
     nmap \
     curl \
     jq \
-    procps
+    procps \
+    libffi-dev
     
 #------------------------------------------------------------------
 # Python requirements

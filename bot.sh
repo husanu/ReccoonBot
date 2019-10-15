@@ -283,7 +283,7 @@ do
 		msga="Set your args for commands (beta)\n"
 		msga+="/advanced (beta)\n"
 		msgc="Clean confis \n"
-		msgc+="/Clean"
+		msgc+="/clean"
 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgt)"		\
@@ -400,7 +400,7 @@ do
 		unset btn_target 
 		;;
 
-		'/Clean')
+		'/clean')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 				     	--text "What do you want to clean ?"		\
 					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_Clean')" 
