@@ -6,9 +6,13 @@
 # Usage:
 
 In reccoon bot is possible run in two ways:
+**Locally** and **Docker**
+
+
 > Locally:
 
-To run locally you must set the variable token
+To run locally you must set the variable token.
+
 ```
 token="KEY"
 shodan_key="Shodan key"
@@ -36,7 +40,7 @@ Using target as argument:
 
 **Or**
 
-Setting your target with /setinfra /setpeople /settarget
+Setting your target with /setinfra /setpeople /settarget.
 ```
 /settarget 
 select "infra" 
@@ -45,16 +49,16 @@ entry your target
 ```  
 
 ## For development
-To enter the branch **dev** you will need to be in the project directory and perform the command
+To enter the branch **dev** you will need to be in the project directory and perform the command.
 ```sh
 git checkout dev
 ```
 
-To view which branch it is in can be used
+To view which branch it is in can be used.
 ```sh
 git branch
 ```
-> The result will be something like
+> The result will be something like.
 ```sh
 $ git branch
 * dev
