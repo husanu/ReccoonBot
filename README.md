@@ -3,7 +3,7 @@
 
 ## is a telegram bot with an OSINT toolkit.
 
-# Usage:
+# Getting Started:
 
 In reccoon bot is possible run in two ways:
 **Locally** and **Docker**
