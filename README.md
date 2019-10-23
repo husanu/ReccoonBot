@@ -1,17 +1,24 @@
-
 # Reccoon Bot 
 
-## is a telegram bot with an OSINT toolkit.
+<p align="center">
+  <h3 align="center">Reccoon Bot</h3>
+  <p align="center">is a telegram bot with an OSINT toolkit.</p>
+</p>
 
-# Getting Started:
+<hr>
 
+
+### Getting Started
+
+```
 In reccoon bot is possible run in two ways:
-**Locally** and **Docker**
-
+```
 
 ### Running local
 
+```
 To run local you must set the variable token.
+```
 
 ```
 export shodan_key="Your shodan key"
@@ -26,10 +33,10 @@ docker run --env token="Your KEY" --env shodan_key="Shodan KeY" St0rm-security/r
 
 # In the bot 
 
+```
 In bot the tools are separated into two groups:
-**infrastructure** and **people**
-
 You can use the tools as follows:
+```
 
 Using target as argument:
 
