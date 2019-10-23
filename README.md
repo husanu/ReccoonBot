@@ -9,19 +9,17 @@ In reccoon bot is possible run in two ways:
 **Locally** and **Docker**
 
 
-> Locally:
+### Running local
 
-To run locally you must set the variable token.
+To run local you must set the variable token.
 
 ```
-token="KEY"
-shodan_key="Shodan key"
-export shodan_key
-export token
+export shodan_key="Your shodan key"
+export token="Your KEY"
 ./bot.sh
 ```
 
-> Docker :
+### Running in Docker
 ```
 docker run --env token="Your KEY" --env shodan_key="Shodan KeY" St0rm-security/reconbot
 ```
@@ -34,14 +32,16 @@ In bot the tools are separated into two groups:
 You can use the tools as follows:
 
 Using target as argument:
-```
+
+```bash
 /nmap scanme.nmap.org
 ```
 
 **Or**
 
 Setting your target with /setinfra /setpeople /settarget.
-```
+
+```bash
 /settarget 
 select "infra" 
 entry your target 
@@ -50,15 +50,18 @@ entry your target
 
 ## For development
 To enter the branch **dev** you will need to be in the project directory and perform the command.
+
 ```sh
 git checkout dev
 ```
 
 To view which branch it is in can be used.
+
 ```sh
 git branch
 ```
-> The result will be something like.
+### The result will be something like.
+
 ```sh
 $ git branch
 * dev
