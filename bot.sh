@@ -28,7 +28,7 @@ btn_infrastructure='
 ["/shodan","/whois"] 
 '
 btn_agv='
-["ARGS NMAP"] 
+["args-nmap"] 
 '
 
 btn_target='["People 👨‍💻","Infrastructure 🖥"]'
@@ -470,7 +470,7 @@ do
 			;;
 		esac
 		case ${message_reply_to_message_text[$id]} in
-			*"ARGS"*)
+			*"NMAP"*)
 			echo $message_text > $arg_nmap_dir
 			ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
 						--text "Teus args $message_text" 	\
