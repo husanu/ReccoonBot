@@ -36,9 +36,9 @@ btn_target='["People 👨‍💻","Infrastructure 🖥"]'
 btn_advanced='["args-nmap"]'
 
 btn_clean='
-["Cleam Target - People"],
-["Cleam Target - Infrastructure"],
-["Cleam All","Cleam Args"]
+["Clean Target - People"],
+["Clean Target - Infrastructure"],
+["Clean All","Clean Args"]
 '
 
 keyboard="$(ShellBot.ReplyKeyboardMarkup --button 'btn_all' --one_time_keyboard true)"
@@ -290,13 +290,13 @@ do
 		msgc+="/clean"
 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
-					--text "$(echo -e $msgt)"		\
+					--text "$(echo -e $msgp)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgi)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
-					--text "$(echo -e $msgp)"		\
+					--text "$(echo -e $msgt)"		\
 					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]}	\
 					--text "$(echo -e $msgs)"		\
