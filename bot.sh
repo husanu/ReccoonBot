@@ -33,10 +33,12 @@ btn_agv='
 
 btn_target='["People 👨‍💻","Infrastructure 🖥"]'
 
-btn_Clean='
-["Clean Target - People"],
-["Clean Target - Infrastructure"],
-["Clean All","Clean Args"]
+btn_advanced='["args-nmap"]'
+
+btn_clean='
+["Cleam Target - People"],
+["Cleam Target - Infrastructure"],
+["Cleam All","Cleam Args"]
 '
 
 keyboard="$(ShellBot.ReplyKeyboardMarkup --button 'btn_all' --one_time_keyboard true)"
@@ -55,15 +57,17 @@ do
 	[[ ${message_chat_type[$id]} != private ]] && continue
 	mkdir /tmp/${message_from_id[$id]}
         target_dir=/tmp/${message_from_id[$id]}/target
+        target_shell=/tmp/${message_from_id[$id]}/shell
         target_dir_p=/tmp/${message_from_id[$id]}/target_people
         target=$(< $target_dir)
 	target_p=$(< $target_dir_p)
 	arg_nmap_dir=/tmp/${message_from_id[$id]}/nmap-agr
+	arg_nmap=$(< $arg_nmap_dir)
 	
 	case ${message_text[$id]} in
 		'/start')
         	 msg="Hi *$message_from_username* , Let's do a recon ? ?\n"
-       	 	 msg+="Your frist time ? Go to /readme"
+       	 	 msg+="Your frist time ? Go to /commands"
        		 ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 		 			--text "$(echo -e $msg)"		\
 					--parse_mode markdown
@@ -91,7 +95,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 		                        --parse_mode markdown			\
 					--text "Executing *NMAP* \\n Target = *$message_text* Wait =)"   
-		nmap_result=$(nmap $message_text)
+		nmap_result=$(nmap $arg_nmap $message_text)
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--text "$nmap_result"  
 		;; 
@@ -100,7 +104,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 				        --parse_mode markdown			\
 					--text "Executing *NMAP* \\n Target = *$target* Wait =)"   
-		nmap_result=$(nmap $target)
+		nmap_result=$(nmap $arg_nmap $target)
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--text "$nmap_result"  
 		;;
@@ -119,7 +123,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *The Harvester* \\n Target = *$target* Wait =)"   
-		theharvester_result=$(theHarvester.py -d  $target -l 50 -b google)
+		theharvester_result=$(theharvester -d  $target -l 50 -b google)
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--text "$theharvester_result"  
 		;;
@@ -183,7 +187,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Starting *TOR*" 
-		service tor start && sleep 10 
+		service tor start && sleep 5 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Karma* \\nTarget = *$target_p* Wait =)"   
@@ -199,7 +203,7 @@ do
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Starting *TOR*" 
-		service tor start && sleep 10 
+		service tor start && sleep 5 
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 					--parse_mode markdown			\
 					--text "Executing *Karma* \\n Target = *$message_text* Wait =)" 
@@ -269,7 +273,7 @@ do
 		msgi="For *Infrastructure* \n"
 		msgi+="/nmap  - Open-source network scanner \n"
 		msgi+="/shodan - Shodan is the world's first search engine for Internet-connected devices\n"
-		msgi+="/inurl  - Advanced search in search engines, enables analysis provided to exploit\n"	
+		msgi+="/inurl  - (Working) Advanced search in search engines, enables analysis provided to exploit\n"	
 		msgi+="/dorks  - \n"
 		msgi+="/whois  - Research domain ownership with Whois Lookup\n"
 		msgt="To define your target \n"
@@ -305,17 +309,15 @@ do
 					--parse_mode markdown
 		;;
 
-		'/admin')
-		message_text=$(echo "$message_text" | awk '{print $2,$3}') 
-		$message_text > log 2> log
+		"/shell "*)
+		message_text=$(echo "$message_text" | sed -e 's/\/shell //') 
+		$message_text > $target_shell 2> $target_shell
 		ShellBot.sendMessage 	--chat_id $message_chat_id 		\
-					--text "Comando executado"
+					--text "$(echo -e Execution *Output*)" 	\
+					--parse_mode markdown
 		ShellBot.sendMessage 	--chat_id $message_chat_id 		\
-					--text "$(echo -e "<b>log do comando $message_text</b>\n\n")" \
-					--parse_mode html
-		ShellBot.sendMessage 	--chat_id $message_chat_id 		\
-					--text "$(cat log)"
-		> log
+					--text "$(cat $target_shell)"
+		> $target_shell
 		;;
 
 		'/btnall')
@@ -340,16 +342,17 @@ do
 		;;
 		'/advanced')
 		ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
-					--text "For what command ?" 		\
+					--text "For what command  ?" 		\
 					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_agv')"
 		;;
 		
-		'ARGS NMAP')
-		ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
-					--text "For what ARGS to NMAP ?" 	\
-					--reply_markup "$(ShellBot.ForceReply)"
-		;;
 
+	        'args-nmap')
+		ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
+					--text "What args to NMAP" 	\
+					--reply_markup "$(ShellBot.ForceReply)"
+		unset btn_agv
+		;;
 		'/settarget')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 		\
 				     	--text "What target?"			\
@@ -403,12 +406,12 @@ do
 		'/clean')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
 				     	--text "What do you want to clean ?"		\
-					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_Clean')" 
+					--reply_markup "$(ShellBot.ReplyKeyboardMarkup --button 'btn_clean')" 
 		;;
 
 		'Clean Target - People')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Target People Clean"		\
+				     	--text "Target People clean"		\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $target_dir_p
@@ -417,7 +420,7 @@ do
 
 		'Clean Target - Infrastructure')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Target Infrastructure Clean"		\
+				     	--text "Target Infrastructure clean"		\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $target_dir
@@ -435,7 +438,7 @@ do
 
 		'Clean Args')
 		ShellBot.sendMessage 	--chat_id ${message_from_id[$id]} 	\
-				     	--text "Args Clean"			\
+				     	--text "Args clean"			\
 					--reply_markup "$(ShellBot.ReplyKeyboardRemove)" \
 					--parse_mode markdown
 		> $arg_nmap_dir		
@@ -470,7 +473,7 @@ do
 			*"ARGS"*)
 			echo $message_text > $arg_nmap_dir
 			ShellBot.sendMessage	--chat_id ${message_from_id[$id]} 	\
-						--text "Your Args $message_text" 	\
+						--text "Teus args $message_text" 	\
 						--reply_markup "$keyboard_infrastructure"  \
 						--parse_mode markdown
 						
